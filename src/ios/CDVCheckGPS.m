@@ -14,4 +14,19 @@
 	}
   [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
+
+- (void)locationServiceCheck:(CDVInvokedUrlCommand*)command
+{
+	check:(CDVInvokedUrlCommand*)command;
+}
+
+- (void)locationPermissionCheck:(CDVInvokedUrlCommand*)command
+{
+	check:(CDVInvokedUrlCommand*)command;
+}
+
+- (void)locationPermissionAsk:(CDVInvokedUrlCommand*)command
+{
+	check:(CDVInvokedUrlCommand*)command;
+}
 @end

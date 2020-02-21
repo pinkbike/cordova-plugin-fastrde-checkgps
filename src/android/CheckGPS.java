@@ -5,30 +5,67 @@ import org.apache.cordova.CallbackContext;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.location.LocationManager;
 import android.content.Context;
-/*
- * thx to http://stackoverflow.com/questions/843675/how-do-i-find-out-if-the-gps-of-an-android-device-is-enabled
- */
-public class CheckGPS extends CordovaPlugin{
+
+import android.support.v4.app.ActivityCompat;
+import android.Manifest;
+import android.Manifest.permission;
+import android.content.pm.PackageManager;
+
+
+public class CheckGPS extends CordovaPlugin {
+	private static final int PERMISSION_REQUEST_CODE = 200;
+
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-		if (action.equals("check")){
-			this.check(callbackContext);
+		if (action.equals("check")) {
+			this.locationServiceCheck(callbackContext);
+			return true;
+		} else if (action.equals("locationPermissionCheck")) {
+			this.locationPermissionCheck(callbackContext);
+			return true;
+		} else if (action.equals("locationPermissionAsk")) {
+			this.locationPermissionAsk(callbackContext);
 			return true;
 		}
 		return false;
 	}
 
-	private void check(CallbackContext callbackContext){
+
+	private void locationServiceCheck(CallbackContext callbackContext){
 		Context context = this.cordova.getActivity().getApplicationContext();
-    final LocationManager manager = (LocationManager) context.getSystemService( Context.LOCATION_SERVICE );
-    if ( manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+
+		final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			callbackContext.success();
-    }else{
+		} else {
 			callbackContext.error(0);
 		}
-  }
+	}
+
+
+	private void locationPermissionCheck(CallbackContext callbackContext) {
+		Context context = this.cordova.getActivity().getApplicationContext();
+
+		boolean permissionAccessCoarseLocationApproved =
+			ActivityCompat.checkSelfPermission(context, permission.ACCESS_COARSE_LOCATION)
+				== PackageManager.PERMISSION_GRANTED;
+
+		if (permissionAccessCoarseLocationApproved) {
+			callbackContext.success();
+		} else {
+			callbackContext.error(0);
+		}
+	}
+	
+	private void locationPermissionAsk(CallbackContext callbackContext) {
+		String[] permissions = new String[] {
+			Manifest.permission.ACCESS_COARSE_LOCATION,
+			Manifest.permission.ACCESS_FINE_LOCATION
+		};
+		cordova.requestPermissions(this, PERMISSION_REQUEST_CODE, permissions);
+		callbackContext.success();
+	}
 }
