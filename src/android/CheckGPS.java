@@ -63,7 +63,8 @@ public class CheckGPS extends CordovaPlugin {
 	private void locationPermissionAsk(CallbackContext callbackContext) {
 		String[] permissions = new String[] {
 			Manifest.permission.ACCESS_COARSE_LOCATION,
-			Manifest.permission.ACCESS_FINE_LOCATION
+			Manifest.permission.ACCESS_FINE_LOCATION,
+			Manifest.permission.ACCESS_BACKGROUND_LOCATION
 		};
 		cordova.requestPermissions(this, PERMISSION_REQUEST_CODE, permissions);
 		callbackContext.success();
